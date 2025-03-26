@@ -31,7 +31,10 @@ func MustLoad() *Config {
 		panic("Config file does not exists " + path)
 	}
 
-	var config Config
+	var config Config // Declares an uninitialized Config variable. GO ini.
+	// tializes struct fields with zero values.
+	// var config *Config  declaring a pointer to a Config struct, but it is nil by default.
+	// config := new(Config)  Allocates memory, fields have zero values
 
 	if err := cleanenv.ReadConfig(path, &config); err != nil {
 		panic("Failed to read config " + err.Error())

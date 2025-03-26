@@ -4,6 +4,7 @@ go 1.22.2
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
+	github.com/RashadNovruzov/prettyslogger v0.0.0-20250326121409-89a9cb57f52a // indirect
 	github.com/RashadNovruzov/protos v0.1.1 // indirect
 	github.com/ilyakaznacheev/cleanenv v1.5.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
