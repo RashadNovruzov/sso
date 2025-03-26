@@ -1,1 +1,1 @@
-Project for testing grpc,jwt,protobuf
+Project for learning grpc,jwt,protobuf
