@@ -3,7 +3,10 @@ package main
 import (
 	"log/slog"
 	"os"
+	"os/signal"
+	"sso/internal/app"
 	"sso/internal/config"
+	"syscall"
 
 	"github.com/RashadNovruzov/prettyslogger/handlers/slogpretty"
 )
@@ -30,9 +33,17 @@ func main() {
 
 	log.Warn("Warning log")
 
-	// Todo: initialize (app)
+	application := app.New(log, config.GRPC.Port, config.StoragePath, config.TokenTTL)
+	go application.MustRun()
 
-	// Todo: run grpc server
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	<-stop // waiting for one of those signals which written above from stop channel. After receiving signal code will continue and shutdown gracefully
+
+	application.GRPCServ.Stop()
+
+	log.Info("Application stopped")
+
 }
 
 func setupLogger(env string) *slog.Logger {

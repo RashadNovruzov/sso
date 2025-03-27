@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type GRPCConfig struct {
-	Port    int32         `yaml:"port"`
+	Port    int           `yaml:"port"`
 	Timeout time.Duration `yaml:"timeout"`
 }
 
@@ -31,8 +31,9 @@ func MustLoad() *Config {
 		panic("Config file does not exists " + path)
 	}
 
-	var config Config // Declares an uninitialized Config variable. GO ini.
-	// tializes struct fields with zero values.
+	var config Config // Declares an uninitialized Config variable.
+	// GO initializes struct fields with zero values.
+
 	// var config *Config  declaring a pointer to a Config struct, but it is nil by default.
 	// config := new(Config)  Allocates memory, fields have zero values
 
