@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"sso/internal/services/auth"
 	"sso/internal/storage"
 
 	ssov1 "github.com/RashadNovruzov/protos/gen/go/sso"
@@ -36,12 +37,15 @@ func (s *ServerAPI) Login(ctx context.Context, req *ssov1.LoginRequest) (*ssov1.
 	}
 
 	if req.GetAppId() == 0 {
-		return nil, status.Error(codes.InvalidArgument, "app id is required")
+		return nil, status.Error(codes.InvalidArgument, "app_id is required")
 	}
 
 	token, err := s.auth.Login(ctx, req.Email, req.Password, req.AppId)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "internal error occured")
+		if errors.Is(err, auth.ErrInvalidCredentials) {
+			return nil, status.Error(codes.InvalidArgument, "invalid email or password")
+		}
+		return nil, status.Error(codes.Internal, "failed to login")
 	}
 
 	return &ssov1.LoginResponse{Token: token}, nil
