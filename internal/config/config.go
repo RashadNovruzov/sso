@@ -21,27 +21,27 @@ type GRPCConfig struct {
 }
 
 func MustLoad() *Config {
-	path := fetchConfigPath()
-
-	if path == "" {
-		panic("Config path is empty")
+	configPath := fetchConfigPath()
+	if configPath == "" {
+		panic("config path is empty")
 	}
 
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		panic("Config file does not exists " + path)
+	return MustLoadPath(configPath)
+}
+
+func MustLoadPath(configPath string) *Config {
+	// check if file exists
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		panic("config file does not exist: " + configPath)
 	}
 
-	var config Config // Declares an uninitialized Config variable.
-	// GO initializes struct fields with zero values.
+	var cfg Config
 
-	// var config *Config  declaring a pointer to a Config struct, but it is nil by default.
-	// config := new(Config)  Allocates memory, fields have zero values
-
-	if err := cleanenv.ReadConfig(path, &config); err != nil {
-		panic("Failed to read config " + err.Error())
+	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+		panic("cannot read config: " + err.Error())
 	}
 
-	return &config
+	return &cfg
 }
 
 // this function will get config path from env variable or from command line flag
