@@ -2,6 +2,8 @@ package auth
 
 import (
 	"context"
+	"errors"
+	"sso/internal/storage"
 
 	ssov1 "github.com/RashadNovruzov/protos/gen/go/sso"
 	"google.golang.org/grpc"
@@ -56,9 +58,9 @@ func (s *ServerAPI) Register(ctx context.Context, in *ssov1.RegisterRequest) (*s
 
 	uid, err := s.auth.Register(ctx, in.GetEmail(), in.GetPassword())
 	if err != nil {
-		// if errors.Is(err, storage.ErrUserExists) {
-		// 	return nil, status.Error(codes.AlreadyExists, "user already exists")
-		// }
+		if errors.Is(err, storage.ErrUserExists) {
+			return nil, status.Error(codes.AlreadyExists, "user already exists")
+		}
 
 		return nil, status.Error(codes.Internal, "failed to register user")
 	}
@@ -73,9 +75,9 @@ func (s *ServerAPI) IsAdmin(ctx context.Context, in *ssov1.IsAdminRequest) (*sso
 
 	isAdmin, err := s.auth.IsAdmin(ctx, in.GetUserId())
 	if err != nil {
-		// if errors.Is(err, storage.ErrUserNotFound) {
-		// 	return nil, status.Error(codes.NotFound, "user not found")
-		// }
+		if errors.Is(err, storage.ErrUserNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 
 		return nil, status.Error(codes.Internal, "failed to check admin status")
 	}
